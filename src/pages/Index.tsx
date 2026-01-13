@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
+import DetonatorSimulator from '@/components/DetonatorSimulator';
 
 interface UserSession {
   username: string;
@@ -294,18 +295,14 @@ export default function Index() {
 
           {/* Practice Tab */}
           <TabsContent value="practice" className="space-y-4">
+            <DetonatorSimulator />
+            
             <Card className="border-purple-500/20 bg-slate-900/50 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="text-purple-400">Интерактивные симуляции</CardTitle>
-                <CardDescription>Практическая отработка навыков в безопасной среде</CardDescription>
+                <CardTitle className="text-purple-400">Другие симуляции</CardTitle>
+                <CardDescription>Дополнительные упражнения для практики</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <SimulationCard 
-                  title="Программирование задержки детонации"
-                  difficulty="Базовый"
-                  attempts={5}
-                  bestScore={85}
-                />
                 <SimulationCard 
                   title="Подключение детонаторов к блоку управления"
                   difficulty="Средний"
