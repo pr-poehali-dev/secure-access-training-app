@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,11 @@ interface Detonator {
   status: 'idle' | 'armed' | 'fired' | 'error';
 }
 
-export default function DetonatorSimulator() {
+interface DetonatorSimulatorProps {
+  username?: string;
+}
+
+export default function DetonatorSimulator({ username }: DetonatorSimulatorProps) {
   const [detonators, setDetonators] = useState<Detonator[]>([
     { id: 1, delay: 0, status: 'idle' },
     { id: 2, delay: 0, status: 'idle' },
@@ -25,7 +29,9 @@ export default function DetonatorSimulator() {
   const [isFiring, setIsFiring] = useState(false);
   const [testPassed, setTestPassed] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const API_URL = 'https://functions.poehali.dev/ded8e6aa-8eb3-477f-8584-8f1237784c9b';
 
   const updateDelay = (id: number, delay: string) => {
     const delayNum = parseInt(delay) || 0;
@@ -88,7 +94,43 @@ export default function DetonatorSimulator() {
       variant: isSequential ? "default" : "destructive"
     });
 
+    // Сохранить результат в БД
+    if (username) {
+      await saveResult(calculatedScore, isSequential, correctSequence);
+    }
+
     setIsFiring(false);
+  };
+
+  const saveResult = async (score: number, passed: boolean, sequence: number[]) => {
+    if (!username) return;
+    
+    setIsSaving(true);
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          test_type: 'detonator_simulator',
+          score,
+          passed,
+          max_delay: Math.max(...sequence),
+          sequence_data: { delays: sequence }
+        })
+      });
+      
+      if (!response.ok) throw new Error('Failed to save result');
+      
+      const data = await response.json();
+      if (data.success) {
+        console.log('Result saved successfully');
+      }
+    } catch (error) {
+      console.error('Error saving result:', error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const reset = () => {

@@ -1,0 +1,34 @@
+{
+  "tests": [
+    {
+      "name": "Save test result",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "username": "test_user",
+        "test_type": "detonator_simulator",
+        "score": 85,
+        "passed": true,
+        "max_delay": 800,
+        "sequence_data": {
+          "delays": [100, 300, 500, 800]
+        }
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get user results",
+      "method": "GET",
+      "path": "/?username=new_test_user_123",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "results": []
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

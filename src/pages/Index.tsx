@@ -9,6 +9,7 @@ import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import DetonatorSimulator from '@/components/DetonatorSimulator';
+import TestResultsHistory from '@/components/TestResultsHistory';
 
 interface UserSession {
   username: string;
@@ -295,7 +296,9 @@ export default function Index() {
 
           {/* Practice Tab */}
           <TabsContent value="practice" className="space-y-4">
-            <DetonatorSimulator />
+            <DetonatorSimulator username={session?.username} />
+            
+            <TestResultsHistory username={session?.username} />
             
             <Card className="border-purple-500/20 bg-slate-900/50 backdrop-blur-sm">
               <CardHeader>
